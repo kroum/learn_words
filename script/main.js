@@ -1,6 +1,7 @@
-var lwds = lwds || {};
+﻿var lwds = lwds || {};
 
-var learnWords = function(wordsSets) {
+(function() {
+	learnWords = function(wordsSets) {
 	var _words = [], 
 		content, head, trans,
 		timer, displayTimer;
@@ -11,7 +12,7 @@ var learnWords = function(wordsSets) {
 	
 	var _createUI = function() {
 		content = document.createElement('div');
-		content.setAttribute('style', 'width:250px;float:left;overflow:hidden;visibility:hidden;position:absolute;top:250px;left:0;z-index:1000');
+		content.setAttribute('style', 'width:250px;float:left;overflow:hidden;visibility:hidden;position:fixed;top:250px;left:100px;z-index:1000;background-color:#fff;border:1px solid #000;padding:10px;');
 
 		head = document.createElement('h3');
 		trans = document.createElement('p');
@@ -80,6 +81,9 @@ var learnWords = function(wordsSets) {
 		}
 	};
 };
+return learnWords;
+}
+)()
 
 if (undefined === lwds.learn) {
 	lwds.learn = new learnWords();
@@ -131,4 +135,49 @@ lwds.learn.addWordsSet([
 				{orig: "What for?", trans: "Зачем?"},
 				{orig: "What of it?", trans: "И что из этого?"},
 				{orig: "You can take it from me", trans: "Можешь мне поверить"}			
+			]);
+lwds.learn.addWordsSet([
+				{orig: "By the way.", trans: "Между прочим. "},
+				{orig: "A drop in the bucket", trans: "Капля в море "},
+				{orig: "And so on and so forth", trans: "И т.д. и т.п. "},
+				{orig: "As drunk as a lord", trans: "Пьян в стельку "},
+				{orig: "As I said before.", trans: "Как я говорил.. "},
+				{orig: "As innocent as a babe unborn", trans: "Совсем как ребенок "},
+				{orig: "As sure as eggs is eggs", trans: "Как дважды два "},
+				{orig: "As to... (As for.)", trans: "Что касается. "},
+				{orig: "Believe it or not, but", trans: "верите или нет, но "},
+				{orig: "Did I get you right?", trans: "Я правильно понял? "},
+				{orig: "Don't mention it", trans: "Не благодарите "},
+				{orig: "Don't take it to heart", trans: "Не принимай близко к сердцу "},
+				{orig: "Forgive me, please, I meant well.", trans: "Извините, я хотел как лучше "},
+				{orig: "He is not a man to be trifled with", trans: "С ним лучше не шутить "},
+				{orig: "I am afraid you are wrong", trans: "Боюсь, что Вы не правы "},
+				{orig: "I didn't catch the last word", trans: "Я не понял последнее слово "},
+				{orig: "I mean it", trans: "Именно это я имею в виду "},
+				{orig: "I was not attending", trans: "Я прослушал "},
+				{orig: "If I am not mistaken", trans: "Если я не ошибаюсь "},
+				{orig: "If I remember rightly", trans: "Если я правильно помню "},
+				{orig: "In other words.", trans: "Другими словами "},
+				{orig: "In short.", trans: "Вкратце "},
+				{orig: "It does you credit", trans: "Это делает вам честь "},
+				{orig: "It doesn't matter", trans: "Это не важно "},
+				{orig: "It is a good idea", trans: "Это хорошая мысль "},
+				{orig: "It is new to me", trans: "Это новость для меня "},
+				{orig: "Let us hope for the best", trans: "Давайте надеяться на лучшее "},
+				{orig: "May I ask you a question?", trans: "Могу я спросить? "},
+				{orig: "Mind your own business", trans: "Занимайся своим делом "},
+				{orig: "Most likely", trans: "Наиболее вероятно "},
+				{orig: "Neither here nor there", trans: "Ни то, ни се "},
+				{orig: "Next time lucky", trans: "Повезет в следующий раз "},
+				{orig: "Nothing much", trans: "Ничего особенного "},
+				{orig: "Oh, that. That explains it", trans: "Это все объясняет "},
+				{orig: "On the one hand .", trans: "С одной стороны "},
+				{orig: "On the other hand .", trans: "С другой стороны "},
+				{orig: "Say it again, please", trans: "Повторите еще раз, пожалуйста "},
+				{orig: "That's where the trouble lies", trans: "Вот в чем дело! "},
+				{orig: "Things happen", trans: "Всякое бывает "},
+				{orig: "What do you mean by saying it?", trans: "Что Вы имеете ввиду? "},
+				{orig: "What is the matter?", trans: "В чем дело? "},
+				{orig: "Where were we?", trans: "На чем мы остановились? "},
+				{orig: "You were saying?", trans: "Вы что-то сказали?"}
 			]);

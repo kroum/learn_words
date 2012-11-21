@@ -1,0 +1,1 @@
+/usr/bin/java -jar compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS --js ./main.js --js_output_file ./learn-min.js
