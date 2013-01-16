@@ -1,31 +1,47 @@
-﻿var lwds = lwds || {};
-
-(function() {
+﻿(function() {
 learnWords = function(wordsSets) {
 	var _words = [], 
 		content, head, trans,
-		timer, displayTimer;
+		timer, displayTimer,
+		containerTop = 250, containerLeft = 100,
+		isMouseDown = false, mousePosLeft, mousePosTop, mouseShiftLeft, mouseShiftTop;
 
 	var _loadScript = function(scriptSrc) {
 		var src = document.createElement("script");
 		src.type ="text/javascript";
 		src.src = scriptSrc;
 		document.getElementsByTagName("body")[0].appendChild(src);
-	};
-	
-	var _createUI = function() {
+	},
+
+	_eventDelegation = function(contentDom) {
+		function addEvent(domElement, event, callback) {
+			if (undefined !== domElement.addEventListener) {
+				contentDom.addEventListener(event, callback);
+			} else if (undefined !== domElement.attachEvent) {
+				contentDom.attachEvent("on" + event, callback);
+			} else {
+				contentDom["on"+event] = callback;
+			}
+		}
+
+		addEvent(contentDom, "mousedown", onMouseDown);
+		addEvent(contentDom, "mousemove", onMouseMove);
+		addEvent(contentDom, "mouseup", onMouseUp);
+	},
+
+	_createUI = function() {
 		content = document.createElement('div');
 		var style = content.getAttribute("style");
 		if (null == style)
-			content.setAttribute('style', 'width:250px;overflow:hidden;visibility:hidden;position:fixed;top:250px;left:100px;z-index:1000;background-color:#fff;border:1px solid #000;padding:10px;');
+			content.setAttribute('style', 'width:250px;overflow:hidden;visibility:hidden;position:fixed;top:' + containerTop + 'px;left:' + containerLeft + 'px;z-index:1000;background-color:#fff;border:1px solid #000;padding:10px;');
 		else {
 			style.width = "250px";
 			style.padding = "10px";
 			style.overflow = "hidden";
 			style.visibility = "hidden";
 			style.position = "fixed";
-			style.top = "250px";
-			style.left = "100px";
+			style.top = containerTop+"px";
+			style.left = containerLeft + "px";
 			style["z-index"] = "1000";
 			style["background-color"] = "#ffffff";
 			style.border="1px solid #000";
@@ -37,48 +53,46 @@ learnWords = function(wordsSets) {
 		content.appendChild(head);
 		content.appendChild(trans);
 
+		_eventDelegation(content);
+
 		document.getElementsByTagName('body')[0].appendChild(content);
-	};
-	
-	var showElement = function(element) {
+	},
+
+	showElement = function(element) {
 		var style = element.getAttribute('style');
 		if (null != style && undefined !== style.visibility) {
 			style.visibility = "visible";
 		} else {
-			if (-1 == style.indexOf('visibility')) {
+			if (-1 == style.indexOf("visibility")) {
 				style += '; visibility:visible';
 			}
 			else {
-				style = style.replace(/visibility\:(\ )*hidden/gim,'visibility:visible');
+				style = style.replace(/visibility\:(\ )*hidden/gim,"visibility:visible");
 			}
 		}
 		element.setAttribute('style', style);
-	};
-	
-	var hideElement = function(element) {
+	},
+
+	hideElement = function(element) {
 		var style = element.getAttribute('style');
 		if (null != style && undefined !== style.visibility) {
 			style.visibility = "hidden";
 		} else {
-			if (-1 == style.indexOf('visibility')) {
-				style += '; visibility:hidden';
+			if (-1 == style.indexOf("visibility")) {
+				style += '; visibiliy:hidden';
 			}
 			else {
-				style = style.replace(/visibility\:(\ )*visible/gim,'visibility:hidden');
+				style = style.replace(/visibility\:(\ )*visible/gim,"visibiliy:hidden");
 			}
 		}
 		element.setAttribute('style', style);
-	};
-	
-	var showWords = function() {
-		var len = _words.length;
-		var wordsPair = _words[Math.floor(Math.random()*(len+1))];
-		if (undefined !== wordsPair) {
-			head.innerHTML = wordsPair.orig;
-			trans.innerHTML = wordsPair.trans;
+	},
+
+	_launcer = function() {
+		if (undefined !== timer && null !== timer) {
+			clearTimeout(timer);
 		}
-		showElement(content);
-		setTimeout(function() {
+		timer = setTimeout(function() {
 			hideElement(content);
 
 			if (undefined !== displayTimer && null !== displayTimer) {
@@ -86,9 +100,58 @@ learnWords = function(wordsSets) {
 			}
 			displayTimer = setTimeout(function(){showWords();}, 10000);
 		}, 5000);
-	}
-	
-	var _init = function(wordsSets){
+	},
+
+	showWords = function() {
+		var len = _words.length;
+		var wordsPair = _words[Math.floor(Math.random()*(len+1))];
+		if (undefined !== wordsPair) {
+			head.innerHTML = wordsPair.orig;
+			trans.innerHTML = wordsPair.trans;
+		}
+		showElement(content);
+		_launcer();
+	},
+
+	onMouseDown = function(e) {
+		// do nothing when this is a click of the right mouse button
+		if (0 < e.buttonID) return;
+
+		if (undefined !== displayTimer && null !== displayTimer) {
+			clearTimeout(displayTimer);
+		}
+		if (undefined !== timer && null !== timer) {
+			clearTimeout(timer);
+		}
+		mousePosLeft = e.clientX;
+		mousePosTop = e.clientY;
+		isMouseDown = true;
+	},
+
+	onMouseUp = function(e) {
+		isMouseDown = false;
+		_launcer();
+	},
+
+	onMouseMove = function(e) {
+		if (!isMouseDown) return;
+
+		if (undefined !== e.preventDefault) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+
+		mouseShiftLeft = e.clientX - mousePosLeft;
+		mouseShiftTop = e.clientY - mousePosTop;
+
+		content.style.top = parseInt(content.style.top) + mouseShiftTop + "px";
+		mousePosTop += mouseShiftTop;
+
+		content.style.left = parseInt(content.style.left) + mouseShiftLeft + "px";
+		mousePosLeft += mouseShiftLeft;
+	},
+
+	_init = function(wordsSets){
 		for (var i in wordsSets) {
 			_loadScript(wordsSets[i]);
 		}
@@ -112,6 +175,7 @@ learnWords = function(wordsSets) {
 return learnWords;
 })()
 
+var lwds = lwds || {};
 if (undefined === lwds.learn) {
 	lwds.learn = new learnWords();
 }
